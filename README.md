@@ -72,7 +72,7 @@ python app.py
 Go to:
 
 ```text
-http://127.0.0.1:5000
+placement-predictor-delta.vercel.app
 ```
 
 ## Using your own CSV
