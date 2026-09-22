@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Placement Signal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0C12;
+    --bg-deep:#06070B;
+    --panel:#12151D;
+    --panel-raised:#171B26;
+    --line:#232837;
+    --text:#E7E9EE;
+    --text-muted:#7D8496;
+    --cyan:#5EEAD4;
+    --violet:#8B7CF6;
+    --success:#34D399;
+    --warn:#FB923C;
+  }
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(139,124,246,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(94,234,212,0.08), transparent 55%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family:'Inter', sans-serif;
+  }
+  .display{ font-family:'Space Grotesk', sans-serif; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  .grid-lines{
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent 85%);
+    mask-image: linear-gradient(to bottom, black, transparent 85%);
+    opacity:0.35;
+  }
+
+  .field{
+    background: var(--panel-raised);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    width: 100%;
+    padding: 0.62rem 0.75rem;
+    color: var(--text);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    transition: border-color 0.15s ease;
+  }
+  .field:focus{
+    outline: none;
+    border-color: var(--cyan);
+  }
+  select.field{
+    appearance:none; -webkit-appearance:none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237D8496'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    padding-right: 2rem;
+  }
+  .field-label{
+    font-family:'Inter', sans-serif;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    display:block;
+  }
+
+  .btn-primary{
+    background: var(--cyan);
+    color: #06110F;
+    font-weight: 600;
+    transition: filter 0.15s ease, transform 0.15s ease;
+  }
+  .btn-primary:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+
+  .gauge-ring{ transform: rotate(-90deg); transform-origin: 50% 50%; }
+  .gauge-track{ stroke: var(--line); }
+  .gauge-fill{ stroke: var(--cyan); stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(.3,.8,.4,1); }
+
+  @media (prefers-reduced-motion: no-preference){
+    .fade-up{ animation: fadeUp 0.7s cubic-bezier(.2,.7,.3,1) both; }
+    @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+    .d1{ animation-delay: 0.05s; }
+    .d2{ animation-delay: 0.14s; }
+    .d3{ animation-delay: 0.22s; }
+  }
+</style>
+</head>
+<body class="min-h-screen relative overflow-x-hidden">
+
+  <div class="grid-lines absolute inset-0 pointer-events-none"></div>
+
+  <div class="relative max-w-6xl mx-auto px-6 py-10 md:py-16">
+
+    
+
+    <!-- Hero -->
+    <div class="mb-14 max-w-2xl fade-up d1">
+      <h1 class="display text-4xl md:text-5xl font-semibold leading-tight">
+        Will this student get placed?
+      </h1>
+      <p class="text-[var(--text-muted)] mt-4 text-base md:text-lg leading-relaxed">
+        Feed in a student's academic and activity record
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8 items-start">
+
+      <!-- Form -->
+      <form action="/predict" method="POST" class="lg:col-span-2 space-y-10 fade-up d2">
+
+        <div>
+          <div class="flex items-center gap-3 mb-5">
+            <h2 class="display text-base font-semibold text-[var(--text)]">Profile</h2>
+            <div class="h-px flex-1 bg-[var(--line)]"></div>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div>
+              <label class="field-label" for="gender">Gender</label>
+              <select class="field" id="gender" name="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="branch">Branch</label>
+              <select class="field" id="branch" name="branch" required>
+                <option value="CSE">CSE</option>
+                <option value="IT">IT</option>
+                <option value="ECE">ECE</option>
+                <option value="EEE">EEE</option>
+                <option value="Mechanical">Mechanical</option>
+                <option value="Civil">Civil</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="city">City</label>
+              <input class="field" type="text" id="city" name="city" placeholder="Kolkata" required>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-3 mb-5">
+            <h2 class="display text-base font-semibold text-[var(--text)]">Academics</h2>
+            <div class="h-px flex-1 bg-[var(--line)]"></div>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div>
+              <label class="field-label" for="cgpa">CGPA (/10)</label>
+              <input class="field" type="number" id="cgpa" name="cgpa" step="0.01" min="0" max="10" placeholder="8.20" required>
+            </div>
+            <div>
+              <label class="field-label" for="attendance_percent">Attendance (%)</label>
+              <input class="field" type="number" id="attendance_percent" name="attendance_percent" step="0.1" min="0" max="100" placeholder="85" required>
+            </div>
+            <div>
+              <label class="field-label" for="has_backlog">Active backlog</label>
+              <select class="field" id="has_backlog" name="has_backlog" required>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-3 mb-5">
+            <h2 class="display text-base font-semibold text-[var(--text)]">Activity</h2>
+            <div class="h-px flex-1 bg-[var(--line)]"></div>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div>
+              <label class="field-label" for="technical_skills">Technical skill (/10)</label>
+              <input class="field" type="number" id="technical_skills" name="technical_skills" min="0" max="10" placeholder="7" required>
+            </div>
+            <div>
+              <label class="field-label" for="projects_completed">Projects completed</label>
+              <input class="field" type="number" id="projects_completed" name="projects_completed" min="0" placeholder="4" required>
+            </div>
+            <div>
+              <label class="field-label" for="coding_problems_solved">Problems solved</label>
+              <input class="field" type="number" id="coding_problems_solved" name="coding_problems_solved" min="0" placeholder="350" required>
+            </div>
+            <div>
+              <label class="field-label" for="internship">Internship experience</label>
+              <select class="field" id="internship" name="internship" required>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="tech_events_attended">Tech events attended</label>
+              <input class="field" type="number" id="tech_events_attended" name="tech_events_attended" min="0" placeholder="3" required>
+            </div>
+            <div>
+              <label class="field-label" for="communication_skill">Communication (/10)</label>
+              <input class="field" type="number" id="communication_skill" name="communication_skill" step="0.1" min="0" max="10" placeholder="6.5" required>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-3 mb-5">
+            <h2 class="display text-base font-semibold text-[var(--text)]">Expectation</h2>
+            <div class="h-px flex-1 bg-[var(--line)]"></div>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div>
+              <label class="field-label" for="salary_expectation">Salary expectation (₹/yr)</label>
+              <input class="field" type="number" id="salary_expectation" name="salary_expectation" min="0" placeholder="600000" required>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary px-9 py-3.5 rounded-md text-sm">
+          Predict
+        </button>
+      </form>
+
+      <!-- Gauge panel -->
+      <aside class="fade-up d3">
+        <div class="bg-[var(--panel)] border border-[var(--line)] rounded-lg p-7 lg:sticky lg:top-10">
+          <p class="mono text-xs text-[var(--text-muted)] mb-6">MODEL ACCURACY</p>
+          <div class="relative w-40 h-40 mx-auto">
+            <svg viewBox="0 0 120 120" class="w-full h-full gauge-ring">
+              <circle cx="60" cy="60" r="54" fill="none" stroke-width="8" class="gauge-track"/>
+              <circle cx="60" cy="60" r="54" fill="none" stroke-width="8"
+                stroke-dasharray="339.292"
+                stroke-dashoffset="{{ 339.292 - (339.292 * (model_accuracy / 100)) }}"
+                class="gauge-fill"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="display text-3xl font-semibold">{{ model_accuracy }}%</span>
+              <span class="mono text-[10px] text-[var(--text-muted)] mt-1">TEST SET</span>
+            </div>
+          
+
+    </div>
+
+  </div>
+</body>
+</html>
